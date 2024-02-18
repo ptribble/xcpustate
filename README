@@ -1,0 +1,86 @@
+Wed, May 3, 2006
+
+XCPUSTATE is a snapshot performance monitor. It was originally written by
+Mark Moraes to watch the load distribution on the CPUs on an Silicon Graphics
+Iris 4D/240. It has since been ported to a wide variety of multiprocessors and
+uniprocessors.
+
+On some systems (eg. Suns, Linux),  XCPUSTATE can monitor disk performance,
+and on Suns running SunOS 4.x, it can monitor OMNI network coprocessor
+performance.  It supports the RSTAT RPC protocol, and both tiled/stippled and
+color/grayscale bars.
+
+Native support for the following systems is included:
+
+AIX 3.x and 4.x, BSD 4.3 and earlier, BSD 4.4 and derivitives
+(FreeBSD, NetBSD, OpenBSD), OpenBSD 3.0+, BSDI, Gould NP1, SGI IRIX, MACH,
+NCR SVR4, Solbourne OS/MP, SunOS 4.x, Solaris 2.x or later, USL SVR4, Digital
+Ultrix, Cray UNICOS, Linux, Cygwin
+
+If your system is not listed here, RSTAT RPC may still be used.
+
+The latest version of xcpustate can be obtained via anonymous ftp from:
+    ftp://ftp.cs.toronto.edu/pub/jdd/xcpustate
+    ftp://ftp.x.org/contrib/utilities/
+
+Installation Notes:
+
+	If you have imake, edit the Imakefile, paying special attention
+	to the DEFINES line.  Then generate the makefile using xmkmf and run
+	"make all" to compile the application.
+
+	If you do not have imake, copy Makefile.noimake to Makefile, and
+	modify it for your system, paying special attention to the DEFS
+	line.  
+
+	For some but not all architectures, xcpustate must be installed 
+	with read privileges on /dev/kmem or equivalent. This generally 
+	requires that it be installed setgid kmem or setgid sys, or even 
+	setuid root. If xcpustate cannot read the kernel, it will not be able
+	to access the kernel variables it needs. However, xcpustate will
+	still be able to use the RSTAT protocol.   This is not a problem
+	for Solaris, Linux or Cygwin.
+
+	If you have difficulty compiling the rstat* files, and if you
+	have a functional rpcgen, you can regenerate them for your own
+	architecture by doing a "make veryclean" before typing "make all".
+
+Architecture-dependant notes:
+
+	For SunOS 4.x, add -DOMNI to MACHDEFS in the Imakefile (or 
+	Makefile.noimake) if you have and use OMNI NC400/NC600 network 
+	co-processors and want to include support for them.
+
+	For Solaris 2.x or later, xcpustate uses the kstat interface
+	to access kernel data, and thus read access to /dev/kmem is not
+	necessary.
+
+	For AIX 4.x SMP support using Makefile.noimake, add -DSMP to
+	MACHDEFS.
+
+	For Linux and Cygwin, xcpustate uses /proc/stat, so read
+	access to /dev/kmem is not necessary.  
+
+	For old versions of Linux (2.0 kernels), to get separate
+	bars per CPU, you will need to apply Jerome Forissie's
+	per-cpu usage information patch for /proc/stat, from
+	"http://www-isia.cma.fr/~forissie/smp_kernel_patch/index.html".
+	If desired, you can add -DSHOWAVG to Imakefile or Makefile.noimake
+	to show one more bar than the number of CPUS available; the first
+	bar will be the average over all CPUs.
+
+Porting Notes: 
+
+	It is sufficient to write an s-<machine>.c for the desired system,
+	and add it to s.c.  All system-dependent code is in the
+	appropriate s-<machine>.c file.  Use one of the existing files
+	as a template.
+
+Regards,
+
+John
+--
+John DiMarco <jdd@cs.toronto.edu>                         Office: SF3302B
+IT Director                                               Phone: 416-978-5300
+Department of Computer Science, University of Toronto     Fax:   416-946-5464
+http://www.cs.toronto.edu/~jdd

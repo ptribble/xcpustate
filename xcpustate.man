@@ -1,0 +1,270 @@
+.TH XCPUSTATE 1 "Mar 29, 1996" 
+.SH NAME
+xcpustate - display CPU states (idle, nice, system, kernel) statistics
+.SH SYNTAX
+\fBxcpustate\fP [\fI -toolkitoption\fP ...] [\fI -count\fP iterations] 
+[\fI -interval\fP seconds] [\fI -shorten\fP components]
+[\fI -cpu\fP] [\fI -nocpu\fP] [\fI -disk\fP] [\fI -nodisk\fP] [\fI -omni\fP] 
+[\fI -noomni\fP] [\fI -wait\fP] [\fI -nowait\fP] 
+[\fI -filltype\fP auto|grayscale|color|tile|stipple] 
+[\fI -host\fP hostname] [\fI -version\fP]
+[\fI -colors\fP colorname[,colorname[,...]]] 
+[\fI -avg\fP iterations][\fI -kernel pathname] [\fI -mmap] [\fI -nommap]
+.SH DESCRIPTION
+.I Xcpustate
+displays bars showing the percentage of time the CPU spends in
+different states. On some systems, it optionally indicates disk states in
+the same manner. It can also query remote systems that offer RSTAT RPC services.
+.PP
+When using the RSTAT protocol, or when running locally on machines running 
+Cygwin, or Berkeley Unix or a derivative (eg. suns with SunOS<=4.1.1, 
+microVaxen with Ultrix), the bar indicates the proportions of idle, user, 
+nice, and system time with increasing levels of grayscale or color (from 
+left to right).  When running locally on supported multiprocessors 
+(Solbourne OS/MP systems, Ultrix multiprocessors, Linux/SMP, and the 
+Gould NP1), there will be one bar for each CPU. 
+.PP
+On Linux systems, each CPU bar indicates the proportions of idle, user, nice,
+and system time, respectively, from left to right. Each disk drive bar
+indicates the proportions of idle, read I/O operations, and write I/O
+operations, from left to right. For disk drive bars, the I/O operations are
+displayed on a sliding scale, the entire bar corresponding to the maximum
+total (read and write) number of I/O operations per interval since xcpustate
+was started, and read/write I/O operations shown as fractions of the current
+maximum. For disk drive bar display under Linux, xcpustate relies on
+the "disk_io" statistics in /proc/stat (2.4 kernels) or the
+information in /proc/diskstats (2.6 or later kernels).
+.PP
+On systems running OpenBSD 3.0 or later, each CPU bar indicates the
+proportions of idle, user, nice, interrupt, and system time, respectively, 
+from left to right.
+.PP
+On an SGI system running IRIX, there will be one bar for each CPU, indicating 
+the proportions of idle + wait, user, kernel, sxbrk and interrupt time for 
+that CPU. If the ``wait'' option is set, the bars indicate idle, wait, user, 
+kernel, sxbrk, and interrupt time, from left to right.
+.PP
+On a Sun multiprocessor under SunOS 4.1.2 or 4.1.3, bars indicate the
+proportions of idle + diskwait, user, nice, system, spinlock, and crosscall
+service time for each CPU.
+.PP
+On a Sun or other system (eg. Solbourne, Cray Superserver-6400) running
+Solaris 2.x or later, and on an IBM system running AIX, bars indicate the
+proportions of idle + wait, user, and kernel time for each CPU.  If the
+``wait'' option is set, the bars indicate idle, wait, user, and system/kernel
+time, from left to right.
+.PP
+On a Cray X/MP or Y/MP running Unicos 5.1 or greater, bars indicate
+the proportions of idle + wait, user and system/kernel time for each CPU. 
+.PP
+On systems running the Mach operating system, bars indicates the
+proportions of user, system, and idle time for each CPU.
+.PP
+On supported SVR4 systems (e.g. Dell Unix 2.2), a single bar is 
+displayed showing idle, user, system and wait times.
+.PP
+On NCR SVR4 MP/RAS systems,
+one bar for each CPU (or disk drive) is displayed.
+Each bar indicates the relative proportions of idle, user, system and
+wait times for that CPU.  Disk drive times show device idle and busy.
+.SH OPTIONS
+.I Xcpustate
+accepts all of the standard X Toolkit command line options, plus:
+.TP 8
+.IR -count " iterations"
+The number of times it should update the display. Default is forever.
+.TP 8
+.IR -avg " iterations"
+The number of iterations the bar values should be averaged over. Default is one.
+.TP 8
+.IR -interval " seconds"
+the interval in seconds (fractions permitted) between updates.  Default is 
+1 second.
+.TP 8
+.IR -shorten " components"
+On some systems, 
+.I xcpustate 
+will display the hostname in the bar labels.  Since some fully
+qualified domain names can be very long, this option allows them
+to be shortened to a specific number of components.  eg.
+if your hostname is 
+.I foo.wherever.edu,
+you can shorten it to
+.I foo
+by specifying
+.I "-shorten 1"
+or to
+.I foo.wherever
+by specifying
+.I "-shorten 2".
+Specifying
+.I "-shorten 0"
+will omit the hostname completely; a negative number will cause
+.I xcpustate
+to draw unlabeled bars.
+Some systems may not support this option.
+.TP 8
+.I -cpu
+Display CPU statistics (default).
+.TP 8
+.I -nocpu
+Do not display CPU statistics. 
+.TP 8
+.I -disk
+Display Disk statistics. This is supported only on Suns running SunOS 4.x or
+5.x, on Linux systems, or when using RSTAT. One bar is displayed for each
+disk. Disk bars appear below the CPU bars, if any. When using RSTAT, exactly
+four bars appear regardless of the number of disks on the remote host (this
+is a limitation of the current version of the RSTAT protocol). For Suns
+running SunOS 4.x, the bars report idle, seek, and transfer time. For Suns
+running SunOS 5.x, the bars report idle, wait, and run time. For Linux
+systems, the bars report idle, read I/O operations and write I/O operations.
+When RSTAT is being used, the bars report idle and transfer time.
+.TP 8
+.I -nodisk
+Do not display disk statistics (default).
+.TP 8
+.I -omni
+Display Omni Network Coprocessor Statistics. This is supported only on
+Suns running SunOS 4.x. One bar is displayed for each Network Coprocessor,
+and placed immediately below the bars for the regular CPU(s). Each bar
+indicates idle and system time.
+.TP 8
+.I -noomni
+Do not display omni statistics (default).
+.TP 8
+.I -wait
+Display CPU disk/system wait time as a separate statistic on applicable 
+systems (Eg. SunOS 5.x, SGI IRIX, IBM AIX). 
+.TP 8
+.I -nowait
+Include CPU disk/system wait time as part of idle (default).
+.TP 8
+.I -version
+Print out version information and exit.
+.TP 8
+.I -filltype
+Specify the method 
+.B xcpustate 
+should use to fill the bars. Available options include grayscale,
+color, tile, stipple, or auto. Auto automatically chooses between tiling,
+grayscale, and colour, depending on your display type. Auto is the default.
+.TP 8
+.I -colors
+Specify the colors used to draw the bars. Colors are specified in 
+left-to-right order, separated by commas. A single dot can be used to
+specify the default color at that position. Up to ten colors may be specified.
+Defaults are used for the leftmost colors if less than ten are specified. 
+.TP 8
+.IR -kernel " pathname"
+Specify the path that
+.B xcpustate
+will use to find kernel symbol file information on some systems. This option
+is ignored on IRIX, Mach, and SunOS 5.x.
+.TP 8
+.I -mmap
+Request that
+.B xcpustate
+use mmap to directly map kernel memory into the current process address
+space on some systems (SVR4 and NCR). This is the default.
+.TP 8
+.I -nommap
+Inverse of mmap option. 
+.SH X DEFAULTS
+For
+.I xcpustate
+the available class identifiers are:
+.sp
+.nf
+CPUStateMonitor - the application
+Form - enclosing the entire application, and sub-Forms enclosing 
+Label/Bar pairs.
+.fi
+.PP
+For
+.I xcpustate,
+the available name identifiers are:
+.sp
+.nf
+xcpustate - application name
+The outer Form is "form".
+The Forms enclosing the Label/Bar pairs are "formN", where N is the
+index number, starting with the top pair as zero.
+Each Label name is the same as the label string.
+Each Bar name is "barN".
+.fi
+.sp
+.LP
+For
+.I xcpustate,
+the available resources are:
+.IP "name interval, class Interval"
+corresponds to the -interval option. Takes a float value.
+.IP "name count, class Count"
+corresponds to the -count argument. Takes an integer value.
+.IP "name avg, class Avg"
+corresponds to the -avg argument. Takes an integer value.
+.IP "name shorten, class Shorten"
+corresponds to the -shorten argument. Takes an integer value.
+.IP "name cpu, class Cpu"
+corresponds to the -cpu and -nocpu arguments. Takes a boolean value.
+.IP "name disk, class Disk"
+corresponds to the -disk and -nodisk arguments. Takes a boolean value.
+.IP "name omni, class Omni"
+corresponds to the -omni and -noomni arguments. Takes a boolean value.
+Not available on systems other than Suns running SunOS 4.x.
+.IP "name wait, class Wait"
+corresponds to the -wait and -nowait arguments. Takes a boolean value.
+.IP "name filltype, class Filltype"
+corresponds to the -filltype argument. Takes a string.
+.IP "name host, class Host"
+corresponds to the -host argument. Takes a hostname.
+.IP "name colors, class Colors"
+corresponds to the -colors argument. Takes a comma-separated list of color
+names. 
+.IP "name mmap, class Mmap"
+corresponds to the -mmap and -nommap argument. Takes a boolean value.
+.IP "name kernel, class Kernel"
+corresponds to the -kernel argument. Takes a pathname.
+.SH NOTES
+.I Xcpustate 
+is meant to be easy to port, and extend to monitor a wide variety of statistics.
+.SH SEE ALSO
+xperfmon, xload, xmeter
+.SH AUTHORS
+Mark Moraes at D. E. Shaw wrote the original X code and the SGI IRIX
+code. He also enhanced the code for the Bar widget to support color. 
+John DiMarco at the University of Toronto is the current maintainer. He 
+contributed to the color support, fixed some minor problems, added support for
+SunOS 4.x multiprocessors, SunOS 5.x, disks, Omni network coprocessors, AIX
+(SMP on AIX 4.x) and RSTAT. Thanks to David O'Brien of the University of
+California, Davis for the 4.4BSD code, Chris Siebenmann of the
+University of Toronto for the code for 4.3BSD systems; Walter D. Poxon from
+Cray Research for the code for Cray machines running Unicos; Melinda Shore at
+mt Xinu for the code for Mach systems; Bill Kucharski at Solbourne for the
+code for Solbourne systems; Salvador Pinto Abreu at Universidade Nova de
+Lisboa, Portugal, for the code for Ultrix multiprocessors; Hugues Leroy at
+Irisa, Rennes, France for the code for Gould NP1 bi-processors, Bruce
+Frost at NCR for the code for (Dell) SVR4 and NCR systems, and Kumsup Lee at
+the University of Minnesota and Greg Nakhimovsky at Sun Microsystems for the
+Linux code. Thanks also to Robert Montjoy from the University of Cincinatti
+for contributing and testing some of the SunOS 5.x code, to Dave Cahlander
+from Cray for cleaning up the X resource code, and to Ron Wigmore from
+Ryerson Polytechnic University for his assistance with the AIX port.
+
+.SH BUGS
+The RSTAT RPC protocol supports only one processor and four disks on the 
+remote system. On a multiprocessor, the CPU data reported by RSTAT will
+be an average of all the active CPUs on the machine.
+.PP
+For some operating systems, there may be internal compile-time limits 
+on the number of CPUs or disks supported.  If there are compile-time
+limits, they are reported by the output of the -version flag.
+.PP
+.I Xcpustate
+may initially display nonsensical data, before being updated the first time.
+.PP
+The use of very small (significantly less than one second) intervals may
+result in xcpustate using significant resources, particularly when running
+over the network.  A minimum interval may be specified as a compile-time
+option, and intervals less than this will not be permitted.
