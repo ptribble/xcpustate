@@ -18,6 +18,7 @@ static char rcsid[] = "$Id: xcpustate.c,v 1.32 2004/05/30 01:41:03 jdd Exp $";
 #include "s.h"
 #include "levels.h"
 #include "patchlevel.h"
+#include <stdlib.h>
 
 #define MAXSTR 1024
 #define MAXAVG 1024
@@ -295,7 +296,7 @@ XtIntervalId *id;
     (void) XtAddTimeOut(timeout, update_display, (XtPointer) NULL);
 }
 
-main(argc, argv)
+void main(argc, argv)
 int argc;
 char **argv;
 {

@@ -42,8 +42,8 @@ static kstime_t *old_update, *old_rtime, *old_wtime;
 extern char *xmalloc(/* int nbytes */);
 extern void shorten(/* char *hname */);
 
-extern int read();
-extern long lseek();
+/* extern int read(); */
+/* extern long lseek(); */
 
 extern int diskflag;
 extern int cpuflag;
@@ -133,7 +133,7 @@ num_bars()
 
 /* Called after num_bars to ask for the bar names */
 char **
-label_bars(nbars)
+label_bars(int nbars)
 {
         char **names;
         int i, base, c;
