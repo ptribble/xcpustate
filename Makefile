@@ -101,4 +101,4 @@ rstat.h rstat_clnt.c rstat_xdr.c: rstat.x
 
 install: xcpustate
 	$(INSTALL) -s -Dm755 xcpustate -t $(DESTDIR)/usr/bin
-	$(INSTALL) -Dm644 xcpustate.man $(DESTDIR)/usr/share/man/man1/xcpustate.1
+	$(INSTALL) -Dm644 $(MANPAGE) $(DESTDIR)/usr/share/man/man1/xcpustate.1
